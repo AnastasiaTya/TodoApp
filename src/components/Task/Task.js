@@ -5,7 +5,7 @@ import './Task.css'
 
 export default class Task extends Component {
     render () {
-        const {label, onDeleted, onToggle, status} = this.props;
+        const {label, onDeleted, onToggle, status, onEdit} = this.props;
 
         return (
             <div className="view">
@@ -14,7 +14,7 @@ export default class Task extends Component {
                     <span className="description">{label}</span>
                     <span className="created">created 5 minutes ago</span>
                 </label>
-                <button className="icon icon-edit"></button>
+                <button className="icon icon-edit" onClick={onEdit}></button>
                 <button className="icon icon-destroy" onClick={onDeleted}></button>
             </div>
         )

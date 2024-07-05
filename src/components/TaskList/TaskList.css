@@ -142,3 +142,10 @@
 .todo-list li.editing:last-child {
 	margin-bottom: -1px;
 }
+
+.error {
+	margin-top: 10px;
+	padding-left: 45px;
+	font-size: 15px;
+	color: red;
+}
