@@ -10,21 +10,35 @@ export default class App extends Component {
 
     state = {
       todoData: [
-        this.createTodoItem('Completed task'),
-        this.createTodoItem('Editing task'),
-        this.createTodoItem('Active task')
+        this.createTodoItem('Completed task', '2024 07 07'),
+        this.createTodoItem('Editing task', '2024 07 07'),
+        this.createTodoItem('Active task', '2024 07 07')
       ],
-      filter: 'all'
+      filter: 'all',
     };
 
-    createTodoItem (label) {
+    createTodoItem (label, createdTime) {
       return {
         label,
         status: false,
         edit: false,
         id: this.maxId++,
-        error: false
+        error: false,
+        created: createdTime
       }
+    }
+
+    addItem = (text) => {
+      if(!text.trim()) {
+        return
+      }
+      const newItem = this.createTodoItem(text, Date.now())
+      this.setState(({todoData}) => {
+        const newArr = [...todoData, newItem];
+        return {
+          todoData: newArr
+        }
+      })
     }
 
     changeLabel = (text, id) => {
@@ -45,19 +59,6 @@ export default class App extends Component {
         
       })
     }
-
-    addItem = (text) => {
-      if(!text.trim()) {
-        return
-      }
-      const newItem = this.createTodoItem(text)
-      this.setState(({todoData}) => {
-        const newArr = [...todoData, newItem];
-        return {
-          todoData: newArr
-        }
-      })
-    }
   
     deleteItem = (id) => {
       this.setState(({todoData}) => {
@@ -70,7 +71,6 @@ export default class App extends Component {
     };
 
     deleteCompletedItems = () => {
-      console.log('oshnfd')
       this.setState(({todoData}) => {
         const activeItems = todoData.filter(item => !item.status)
         return {

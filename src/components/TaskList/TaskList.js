@@ -1,11 +1,12 @@
 import React from 'react';
 import Task from '../Task';
+import PropTypes from 'prop-types';
 
 import './TaskList.css'
 
 const TaskList = ({todos, onDeleted, onToggle, onEdit, changeLabel}) => {
     const elements = todos.map(item => {
-        const {id, status, edit, label, ...itemProps} = item
+        const {id, status, edit, label, created, ...itemProps} = item
         
         const changeClass = () => {
             if(edit === true) {
@@ -29,7 +30,7 @@ const TaskList = ({todos, onDeleted, onToggle, onEdit, changeLabel}) => {
         return (
             <li key={id} className={changeClass()}>
                 <Task {...itemProps} onDeleted={() => onDeleted(id)} onToggle={() => onToggle(id)} status={status} 
-                    onEdit={() => onEdit(id)} label={label} />
+                    onEdit={() => onEdit(id)} label={label} created={created} />
                 {edit && 
                     (<form onSubmit={(e) => headleSubmit(e, id)}>
                         <input type="text" className="edit" value={label} onChange={e => heandleChange(e, id)} />
@@ -44,6 +45,22 @@ const TaskList = ({todos, onDeleted, onToggle, onEdit, changeLabel}) => {
             {elements}
         </ul>
     )
+}
+
+TaskList.defaultProps = {
+    todos: [],
+    onEdit: () => {},
+    changeLabel: () => {},
+    onDeleted: () => {},
+    onToggle: () => {}
+}
+
+TaskList.propTypes = {
+    todos: PropTypes.arrayOf(PropTypes.object),
+    onEdit: PropTypes.func,
+    changeLabel: PropTypes.func,
+    onDeleted: PropTypes.func,
+    onToggle: PropTypes.func
 }
 
 export default TaskList
