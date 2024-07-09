@@ -18,7 +18,7 @@ function TaskList({ todos, onDeleted, onToggle, onEdit, changeLabel }) {
       }
       return classList
     }
-    headleSubmit = (e, identifier) => {
+    const headleSubmit = (e, identifier) => {
       e.preventDefault()
       onEdit(identifier)
     }

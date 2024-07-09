@@ -64,7 +64,9 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint \"./src\" --fix",
-    "*.{js,jsx,ts,tsx,html,css}": "npx prettier --check"
+    "**/*.{js,jsx}": [
+      "npm run lint:fix",
+      "prettier --write"
+    ]
   }
 }
