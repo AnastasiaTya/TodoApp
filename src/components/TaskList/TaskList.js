@@ -8,15 +8,15 @@ function TaskList({ todos, onDeleted, onToggle, onEdit, changeLabel }) {
   const elements = todos.map((item) => {
     const { id, status, edit, label, created, error } = item
 
-    const changeClass = () => {
-      let classList = 'todo-item '
-      if (edit) {
-        classList += 'editing'
-      }
-      if (status) {
-        classList += 'completed'
-      }
-      return classList
+    // const changeClass = () => {
+    //   let classList = 'todo-item '
+    //   if (edit) {
+    //     classList += 'editing'
+    //   }
+    //   if (status) {
+    //     classList += 'completed'
+    //   }
+    //   return classList
     }
     const headleSubmit = (e, identifier) => {
       e.preventDefault()
