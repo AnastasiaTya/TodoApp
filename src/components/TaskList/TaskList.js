@@ -1,68 +1,70 @@
-import React from 'react';
-import Task from '../Task';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+
+import Task from '../Task'
 
 import './TaskList.css'
 
-const TaskList = ({todos, onDeleted, onToggle, onEdit, changeLabel}) => {
-    const elements = todos.map(item => {
-        const {id, status, edit, label, created, ...itemProps} = item
-        
-        const changeClass = () => {
-            if(edit === true) {
-                return 'editing'
-            } else if(status === true) {
-                return 'completed'
-            } else {
-                return ''
-            }
-        }
-        const headleSubmit = (e, id) => {
-            e.preventDefault()
-            onEdit(id)
-        }
+function TaskList({ todos, onDeleted, onToggle, onEdit, changeLabel }) {
+  const elements = todos.map((item) => {
+    const { id, status, edit, label, created, error } = item
 
-        const heandleChange = (e, id) => {
-            const text = e.target.value
-            changeLabel(text, id)
-        }
+    const changeClass = () => {
+      let classList = 'todo-item '
+      if (edit) {
+        classList += 'editing'
+      }
+      if (status) {
+        classList += 'completed'
+      }
+      return classList
+    }
+    const headleSubmit = (e, identifier) => {
+      e.preventDefault()
+      onEdit(identifier)
+    }
 
-        return (
-            <li key={id} className={changeClass()}>
-                <Task {...itemProps} onDeleted={() => onDeleted(id)} onToggle={() => onToggle(id)} status={status} 
-                    onEdit={() => onEdit(id)} label={label} created={created} />
-                {edit && 
-                    (<form onSubmit={(e) => headleSubmit(e, id)}>
-                        <input type="text" className="edit" value={label} onChange={e => heandleChange(e, id)} />
-                        {itemProps.error && <div className='error'>Added text</div>}
-                    </form>)
-                }
-            </li> 
-        )
-    })
+    const heandleChange = (e, identifier) => {
+      const text = e.target.value
+      changeLabel(text, identifier)
+    }
+
     return (
-        <ul className='todo-list'>
-            {elements}
-        </ul>
+      <li key={id} className={changeClass()}>
+        <Task
+          key={id}
+          onDeleted={() => onDeleted(id)}
+          onToggle={() => onToggle(id)}
+          status={status}
+          onEdit={() => onEdit(id)}
+          label={label}
+          created={created}
+        />
+        {edit && (
+          <form onSubmit={(e) => headleSubmit(e, id)}>
+            <input type="text" className="edit" value={label} onChange={(e) => heandleChange(e, id)} />
+            {error && <div className="error">Added text</div>}
+          </form>
+        )}
+      </li>
     )
+  })
+  return <ul className="todo-list">{elements}</ul>
 }
 
 TaskList.defaultProps = {
-    todos: [],
-    onEdit: () => {},
-    changeLabel: () => {},
-    onDeleted: () => {},
-    onToggle: () => {}
+  // todos: [],
+  onEdit: () => {},
+  changeLabel: () => {},
+  onDeleted: () => {},
+  onToggle: () => {},
 }
 
 TaskList.propTypes = {
-    todos: PropTypes.arrayOf(PropTypes.object),
-    onEdit: PropTypes.func,
-    changeLabel: PropTypes.func,
-    onDeleted: PropTypes.func,
-    onToggle: PropTypes.func
+  // todos: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
+  onEdit: PropTypes.func,
+  changeLabel: PropTypes.func,
+  onDeleted: PropTypes.func,
+  onToggle: PropTypes.func,
 }
 
 export default TaskList
-
-
