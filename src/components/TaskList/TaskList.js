@@ -59,7 +59,7 @@ function TaskList({ todos, onDeleted, onToggle, onEdit, changeLabel, timer }) {
 }
 
 TaskList.defaultProps = {
-  // todos: [],
+  todos: [],
   onEdit: () => {},
   changeLabel: () => {},
   onDeleted: () => {},
@@ -67,7 +67,7 @@ TaskList.defaultProps = {
 }
 
 TaskList.propTypes = {
-  // todos: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
+  todos: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)),
   onEdit: PropTypes.func,
   changeLabel: PropTypes.func,
   onDeleted: PropTypes.func,
