@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { useState } from 'react'
 
 import NewTaskForm from '../NewTaskForm'
 import TaskList from '../TaskList'
@@ -7,9 +7,12 @@ import convertInMillisec from '../../utils/convertInMillisec'
 
 import './App.css'
 
-export default class App extends Component {
-  static filterItem(items, filter) {
-    switch (filter) {
+function App() {
+  const [filter, setFilter] = useState('all')
+  const [todoData, setTodoData] = useState([])
+
+  const filterItem = (items, itemFilter) => {
+    switch (itemFilter) {
       case 'all':
         return items
       case 'active':
@@ -21,7 +24,7 @@ export default class App extends Component {
     }
   }
 
-  static createTodoItem(label, milliseconds, createdTime) {
+  const createTodoItem = (label, milliseconds, createdTime) => {
     const newItem = {
       label,
       milliseconds,
@@ -34,131 +37,127 @@ export default class App extends Component {
     return newItem
   }
 
-  constructor() {
-    super()
-    this.state = {
-      todoData: [],
-      filter: 'all',
-    }
-  }
-
-  get getComplited() {
-    const { todoData } = this.state
+  const getComplited = () => {
     const doneCount = todoData.length ? todoData.filter((el) => el.status).length : []
     return todoData.length - doneCount
   }
 
-  onFilterChange = (filter) => {
-    this.setState({ filter })
+  const onFilterChange = (itemFilter) => {
+    setFilter(itemFilter)
   }
 
-  toggleStatus = (id) => {
-    this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id)
-      const el = todoData[index]
+  const toggleStatus = (id) => {
+    setTodoData((prevTodoData) => {
+      const index = prevTodoData.findIndex((el) => el.id === id)
+      const el = prevTodoData[index]
       const newEl = { ...el, status: !el.status }
-      const render = [...todoData.slice(0, index), newEl, ...todoData.slice(index + 1)]
-      return { todoData: render }
+      const newTodoData = [...prevTodoData.slice(0, index), newEl, ...prevTodoData.slice(index + 1)]
+      return newTodoData
     })
   }
 
-  deleteCompletedItems = () => {
-    this.setState(({ todoData }) => {
-      const activeItems = todoData.filter((item) => !item.status)
-      return {
-        todoData: activeItems,
-      }
+  const blockItem = (id) => {
+    setTodoData((prev) => {
+      const index = prev.findIndex((el) => el.id === id)
+      const el = prev[index]
+      const newEl = { ...el, status: true }
+      const newTodoData = [...prev.slice(0, index), newEl, ...prev.slice(index + 1)]
+      return newTodoData
     })
   }
 
-  deleteItem = (id) => {
-    this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id)
-      const newArr = [...todoData.slice(0, index), ...todoData.slice(index + 1)]
-      return {
-        todoData: newArr,
-      }
+  const deleteCompletedItems = () => {
+    setTodoData((prevTodoData) => {
+      const activeItems = prevTodoData.filter((item) => !item.status)
+      return activeItems
     })
   }
 
-  changeLabel = (text, id) => {
-    this.setState(({ todoData }) => {
+  const deleteItem = (id) => {
+    setTodoData((prevTodoData) => {
+      const index = prevTodoData.findIndex((el) => el.id === id)
+      const deleteItems = [...prevTodoData.slice(0, index), ...prevTodoData.slice(index + 1)]
+      return deleteItems
+    })
+  }
+
+  const changeLabel = (text, id) => {
+    setTodoData((prevTodoData) => {
       if (!text.trim()) {
-        const index = todoData.findIndex((el) => el.id === id)
-        const el = todoData[index]
+        const index = prevTodoData.findIndex((el) => el.id === id)
+        const el = prevTodoData[index]
         const newEl = { ...el, error: true, label: text }
-        const render = [...todoData.slice(0, index), newEl, ...todoData.slice(index + 1)]
-        return { todoData: render }
+        const render = [...prevTodoData.slice(0, index), newEl, ...prevTodoData.slice(index + 1)]
+        return render
       }
-      const index = todoData.findIndex((el) => el.id === id)
-      const el = todoData[index]
+      const index = prevTodoData.findIndex((el) => el.id === id)
+      const el = prevTodoData[index]
       const newEl = { ...el, label: text, error: false }
-      const render = [...todoData.slice(0, index), newEl, ...todoData.slice(index + 1)]
-      return { todoData: render }
+      const render = [...prevTodoData.slice(0, index), newEl, ...prevTodoData.slice(index + 1)]
+      return render
     })
   }
 
-  addItem = (text, min, sec) => {
+  const addItem = (text, min, sec) => {
     if (!text.trim()) {
       return
     }
-    const newItem = App.createTodoItem(text, convertInMillisec(min, sec), Date.now())
-    this.setState(({ todoData }) => {
-      const newArr = [...todoData, newItem]
-      return {
-        todoData: newArr,
-      }
+    const newItem = createTodoItem(text, convertInMillisec(min, sec), Date.now())
+    setTodoData((prevTodoData) => {
+      const newArr = [...prevTodoData, newItem]
+      return newArr
     })
   }
 
-  timer = (id) => {
-    this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id)
-      const el = todoData[index]
+  const timer = (id) => {
+    setTodoData((prevTodoData) => {
+      const index = prevTodoData.findIndex((el) => el.id === id)
+      const el = prevTodoData[index]
       const newEl = { ...el, milliseconds: el.milliseconds - 1000 }
-      const render = [...todoData.slice(0, index), newEl, ...todoData.slice(index + 1)]
-      return { todoData: render }
+      const render = [...prevTodoData.slice(0, index), newEl, ...prevTodoData.slice(index + 1)]
+      return render
     })
   }
 
-  editItem = (id) => {
-    this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id)
-      const el = todoData[index]
+  const editItem = (id) => {
+    setTodoData((prevTodoData) => {
+      const index = prevTodoData.findIndex((el) => el.id === id)
+      const el = prevTodoData[index]
       if (el.error) {
-        return { todoData }
+        return prevTodoData
       }
       const newEl = { ...el, edit: !el.edit }
-      const render = [...todoData.slice(0, index), newEl, ...todoData.slice(index + 1)]
-      return { todoData: render }
+      const render = [...prevTodoData.slice(0, index), newEl, ...prevTodoData.slice(index + 1)]
+      return render
     })
   }
 
-  render() {
-    const { todoData, filter } = this.state
-    const visibleItems = App.filterItem(todoData, filter)
-    return (
-      <section className="todoapp">
-        <NewTaskForm onItemAdded={this.addItem} />
-        <section className="main">
-          <TaskList
-            todos={visibleItems}
-            onDeleted={this.deleteItem}
-            onToggle={this.toggleStatus}
-            onEdit={this.editItem}
-            changeLabel={this.changeLabel}
-            timer={this.timer}
-          />
-          <Footer
-            getComplited={this.getComplited}
-            filterItem={App.filterItem}
-            filter={filter}
-            onFilterChange={this.onFilterChange}
-            deleteCompletedItems={this.deleteCompletedItems}
-            todos={visibleItems}
-          />
-        </section>
+  const visibleItems = filterItem(todoData, filter)
+
+  return (
+    <section className="todoapp">
+      <NewTaskForm onItemAdded={addItem} />
+      <section className="main">
+        <TaskList
+          todos={visibleItems}
+          onDeleted={deleteItem}
+          onToggle={toggleStatus}
+          onEdit={editItem}
+          changeLabel={changeLabel}
+          timer={timer}
+          blockItem={blockItem}
+        />
+        <Footer
+          getComplited={getComplited()}
+          filterItem={filterItem}
+          filter={filter}
+          onFilterChange={onFilterChange}
+          deleteCompletedItems={deleteCompletedItems}
+          todos={visibleItems}
+        />
       </section>
-    )
-  }
+    </section>
+  )
 }
+
+export default App
